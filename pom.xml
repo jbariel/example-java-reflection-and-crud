@@ -111,6 +111,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<!-- <version>${plugin.maven-assembly.version}</version> -->
 				<configuration>
+					<finalName>app</finalName>
 					<archive>
 						<manifest>
 							<mainClass>${proj.main-class}</mainClass>
