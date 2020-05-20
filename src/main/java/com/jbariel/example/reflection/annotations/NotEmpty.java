@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NotNull {
-    public String error() default "Cannot be null";
+public @interface NotEmpty {
+    public String error() default "Cannot be empty";
 }
