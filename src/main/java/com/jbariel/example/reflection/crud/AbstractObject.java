@@ -57,8 +57,14 @@ public abstract class AbstractObject<O extends AbstractObject<O>> {
             List<String> errs = new ArrayList<>();
 
             // System.out.println(f.getName());
-            errs.add(checkNotNull(f));
-            errs.add(checkNotEmpty(f));
+            String tmp = checkNotNull(f);
+            if (null != StringUtils.trimToNull(tmp))
+                errs.add(tmp);
+
+            tmp = checkNotEmpty(f);
+            if (null != StringUtils.trimToNull(tmp))
+                errs.add(tmp);
+
             msgs.put(fieldKey, errs);
         }
         if (null != clazz.getSuperclass()) {
@@ -95,7 +101,8 @@ public abstract class AbstractObject<O extends AbstractObject<O>> {
             boolean acc = f.isAccessible();
             f.setAccessible(true);
             try {
-                if (null == f.get(this)) {
+                String val = (String) f.get(this);
+                if (null != val && StringUtils.trimToEmpty(val).isEmpty()) {
                     rtn = ann.error();
                 }
             } catch (IllegalAccessException e) {
