@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.jbariel.example.reflection.annotations.NotEmpty;
 import com.jbariel.example.reflection.annotations.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
@@ -53,29 +54,56 @@ public abstract class AbstractObject<O extends AbstractObject<O>> {
         String fieldKey = StringUtils.EMPTY;
         for (Field f : Arrays.asList(clazz.getDeclaredFields())) {
             fieldKey = clazz.getCanonicalName() + "#" + f.getName();
-            msgs.put(fieldKey, new ArrayList<>());
+            List<String> errs = new ArrayList<>();
+
             // System.out.println(f.getName());
-            NotNull ann = f.getAnnotation(NotNull.class);
-            if (null != ann) {
-                // do the not null check
-                boolean acc = f.isAccessible();
-                f.setAccessible(true);
-                try {
-                    if (null == f.get(this)) {
-                        List<String> fMsgs = msgs.get(fieldKey);
-                        fMsgs.add(ann.error());
-                        msgs.put(fieldKey, fMsgs);
-                    }
-                } catch (IllegalAccessException e) {
-                    System.err.println("How did we get here? " + e.getLocalizedMessage());
-                    e.printStackTrace();
-                }
-                f.setAccessible(acc);
-            }
+            errs.add(checkNotNull(f));
+            errs.add(checkNotEmpty(f));
+            msgs.put(fieldKey, errs);
         }
         if (null != clazz.getSuperclass()) {
             msgs.putAll(isRecursivelyValid(clazz.getSuperclass()));
         }
         return msgs;
+    }
+
+    protected String checkNotNull(Field f) {
+        String rtn = StringUtils.EMPTY;
+        NotNull ann = f.getAnnotation(NotNull.class);
+        if (null != ann) {
+            // do the not null check
+            boolean acc = f.isAccessible();
+            f.setAccessible(true);
+            try {
+                if (null == f.get(this)) {
+                    rtn = ann.error();
+                }
+            } catch (IllegalAccessException e) {
+                System.err.println("How did we get here? " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+            f.setAccessible(acc);
+        }
+        return rtn;
+    }
+
+    protected String checkNotEmpty(Field f) {
+        String rtn = StringUtils.EMPTY;
+        NotEmpty ann = f.getAnnotation(NotEmpty.class);
+        if (null != ann) {
+            // do the not null check
+            boolean acc = f.isAccessible();
+            f.setAccessible(true);
+            try {
+                if (null == f.get(this)) {
+                    rtn = ann.error();
+                }
+            } catch (IllegalAccessException e) {
+                System.err.println("How did we get here? " + e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+            f.setAccessible(acc);
+        }
+        return rtn;
     }
 }

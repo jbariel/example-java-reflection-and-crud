@@ -1,5 +1,6 @@
 package com.jbariel.example.reflection.crud;
 
+import com.jbariel.example.reflection.annotations.NotEmpty;
 import com.jbariel.example.reflection.annotations.NotNull;
 
 public class SimplePojo extends AbstractObject<SimplePojo> {
@@ -7,6 +8,7 @@ public class SimplePojo extends AbstractObject<SimplePojo> {
     private String name;
 
     @NotNull(error = "I demand val2!")
+    @NotEmpty(error = "HAHA empty is not an actual value, try again fool!")
     private String val2;
 
     public String getName() {
